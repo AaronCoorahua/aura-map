@@ -1,0 +1,1 @@
+Sin puertos publicados: Postgres solo es alcanzable desde la red privada.
