@@ -84,8 +84,7 @@ cmd_local() {
   export DATABASE_URL="sqlite:///$PWD/instance/auramap.db"
 
   aviso "Cargando datos de ejemplo"
-  # El comando seed llega en C10; hasta entonces avisamos sin abortar.
-  "$(python_venv)" -m flask seed || aviso "No pude ejecutar 'flask seed'; sigo sin datos de ejemplo."
+  "$(python_venv)" -m flask seed
 
   aviso "Arrancando en http://localhost:5000 (Ctrl+C para cortar)"
   "$(python_venv)" -m flask run --debug
@@ -142,6 +141,9 @@ cmd_docker() {
   esperar_postgres
 
   esperar_health
+
+  aviso "Cargando datos de ejemplo"
+  docker compose exec -T flask flask --app "app:create_app" seed
 
   aviso "Estado de los servicios"
   docker compose ps
