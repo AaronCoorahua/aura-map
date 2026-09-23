@@ -2,18 +2,21 @@
 
 Curso DevOps, UTEC 2026-2. Repositorio: <https://github.com/AaronCoorahua/aura-map>
 
-> Borrador vivo: se actualiza a medida que avanza el roadmap de `CLAUDE.md`.
-> Los bloques `[CAPTURA: ...]` marcan dónde va cada captura de pantalla.
+> Todas las capturas están en [`imagenes/`](../imagenes/) y se tomaron con el
+> proyecto corriendo de verdad (`./devops.sh docker`) sobre la rama `develop`.
 
 ## a) Título y descripción del proyecto y del equipo
 
-**Nombre del producto:** AuraMap (nombre provisional) — un "Airbnb de
-batallas de aura".
+**Nombre del producto:** AuraMap — el "Airbnb de las batallas de aura".
+
+> *"No es quién grita más fuerte, es quién pierde la compostura primero."*
 
 **Problema y solución:** organizar una batalla de aura hoy se coordina a
-mano (grupos de chat, volantes, boca a boca), sin un lugar central donde ver
-qué batallas hay cerca, cuánto cupo queda o si tienen permiso municipal.
-AuraMap resuelve esto con una app web mínima (sin login, sin pagos) donde:
+mano (grupos de chat, historias de Instagram, TikToks con la ubicación en los
+comentarios, boca a boca), sin un lugar central donde ver qué batallas hay
+cerca, cuánto cupo queda o si tienen permiso municipal para no terminar
+desalojados por serenazgo a mitad del duelo. AuraMap resuelve esto con una
+app web mínima (sin login, sin pagos) donde:
 
 - un organizador publica una batalla con lugar, fecha, cupo y si tiene
   permiso municipal;
@@ -23,33 +26,56 @@ AuraMap resuelve esto con una app web mínima (sin login, sin pagos) donde:
 
 **Integrantes y roles:**
 
-| Persona | Rol DevOps | Responsabilidad principal |
-|---|---|---|
-| A | Release Manager / Integración | GitFlow, protección de ramas, Conventional Commits, revisión de PRs, release y tag. |
-| B | QA & Test Automation | Estrategia de pruebas, pytest y cobertura, pipeline de CI. |
-| C | Platform / Container Engineer | Dockerfile, `compose.yaml` (redes, secretos, volumen, healthcheck) y `devops.sh`. |
+| Persona | Integrante (GitHub) | Rol DevOps | Responsabilidad principal |
+|---|---|---|---|
+| A | Rubén Coorahua (`@AaronCoorahua`) | Release Manager / Integración | GitFlow, protección de ramas, Conventional Commits, revisión de PRs, release y tag. |
+| B | Leonardo Candio (`@kndyy`) | QA & Test Automation | Estrategia de pruebas, pytest y cobertura, pipeline de CI. |
+| C | J. Josnayo (`@jjosnayo2102`) | Platform / Container Engineer | Dockerfile, `compose.yaml` (redes, secretos, volumen, healthcheck) y `devops.sh`. |
 
 Los tres desarrollan features de producto además de su rol; el rol define de
 qué responde cada uno y qué revisa con más rigor en los Pull Requests.
 
-`[CAPTURA: foto o mockup del equipo / repositorio en GitHub con los 3 colaboradores]`
+![Repositorio público en GitHub](../imagenes/01-repo-github.png)
 
 ## b) Justificación de la elección del tema
 
-**Contexto:** el curso pide construir un proyecto real siguiendo un flujo
-DevOps completo (Git con convenciones, pruebas automatizadas, CI y
-containerización) en equipos de 3, con roles diferenciados. AuraMap se eligió
-por ser un dominio simple de modelar (batalla, ubicación, inscripción) que
-permite cubrir todo ese flujo sin alcance innecesario: no requiere login,
-pagos ni integraciones externas más allá de un mapa por CDN.
+**El meme que se volvió plan de fin de semana.** Desde 2024 el "aura" pasó
+de ser una palabra esotérica a la moneda social de la Gen Z y la Gen Alpha:
+en TikTok, Instagram y en cualquier salón de clases se reparten "+1000 de
+aura" por hacer algo con estilo y se quita "-500 de aura" por tropezarse
+frente a todos. En 2025 explotó el *aura farming* (acumular aura a propósito
+con pose, calma y actitud de protagonista de anime), y lo que empezó como
+comentarios en videos se convirtió en algo presencial: grupos de jóvenes que
+se juntan en un parque o una plaza para medirse en **batallas de aura** —
+duelos de presencia, estilo y compostura donde el público decide quién se
+lleva los puntos.
 
-**Motivación y relevancia:** las batallas de aura (freestyle/baile/arte
-urbano) son un fenómeno cultural con comunidades activas pero fragmentadas
-por falta de un canal común de descubrimiento. Un mapa con búsqueda por
-cercanía y control de cupo es una necesidad concreta y acotada, ideal para
-practicar de punta a punta: modelo de datos, API, pruebas unitarias,
-Dockerfile multi-stage, `docker compose` con redes/secretos/healthcheck, CI
-en cada PR y automatización con un script bash propio (`devops.sh`).
+**El problema real detrás del meme.** Hoy esas batallas se organizan con un
+flyer en historias que dura 24 horas, un grupo de WhatsApp que explota y una
+dirección pasada por DM. Pasa siempre lo mismo: los que *quieren participar*
+no saben si queda cupo, los que solo *quieren ir a ver* no se enteran a tiempo
+o no saben si les queda cerca, y los organizadores no pueden decir si tienen
+permiso municipal (clave para que serenazgo no corte el evento). Es la misma
+necesidad que resolvió Airbnb con los alojamientos: un mapa, una ficha clara y
+un botón para reservar tu lugar.
+
+**Por qué este tema para un curso de DevOps.** El curso pide construir un
+proyecto real con un flujo DevOps completo (Git con convenciones, pruebas
+automatizadas, CI y contenedores) en equipos de 3 con roles diferenciados.
+AuraMap encaja perfecto:
+
+- **Dominio simple de modelar** (batalla, ubicación, inscripción) que no se
+  come el tiempo que necesitamos para la parte de DevOps.
+- **Reglas de negocio que sí se pueden probar**: fecha futura, cupo entre 1 y
+  100, coordenadas válidas, distancia por fórmula de Haversine, cupo lleno y
+  sin inscripciones duplicadas. Eso nos dio 15 pruebas con sentido y no
+  pruebas de relleno.
+- **Necesita base de datos de verdad** (PostgreSQL), lo que justifica
+  `docker compose` con dos servicios, red privada, secreto y healthcheck.
+- **Alcance acotado a propósito**: sin login, sin pagos, sin integraciones
+  externas más allá del mapa de OpenStreetMap por CDN.
+- **Nos motiva**: es un tema que nuestros propios compañeros entienden al
+  toque, y eso hace que la demo se defienda sola.
 
 ## c) Aplicación de Git con Conventional Commits
 
@@ -77,7 +103,7 @@ Regla del equipo (documentada en `CLAUDE.md`): un commit por ID del roadmap,
 mensaje exacto acordado de antemano, sin mezclar dos cambios en un commit ni
 partir uno en varios.
 
-`[CAPTURA: git log --oneline --graph --all, o "Insights > Network" en GitHub]`
+![Historial con git log --oneline --graph: cada rama del roadmap entra a develop con merge commit](../imagenes/02-git-log-graph.png)
 
 ### Análisis de 6 commits (de un historial con más de 9)
 
@@ -132,7 +158,9 @@ contenedores y no protege si Postgres cae después. 5 archivos, incluyendo la
 evidencia de antes/después en `docs/evidencias/`. Ejemplo de un fix con
 reproducción documentada antes de escribir la corrección.
 
-`[CAPTURA: para cada uno de los 6 commits, git show <hash> --stat o la vista de "Files changed" del PR correspondiente]`
+![git show --stat de los commits 1 a 3](../imagenes/03-commits-stat-1.png)
+
+![git show --stat de los commits 4 a 6](../imagenes/04-commits-stat-2.png)
 
 **Pull Requests según la metodología de branching:** el equipo usa GitFlow —
 rama `develop` como integración, `main` como estable, y una rama por bloque
@@ -141,7 +169,7 @@ del roadmap (`feature/...`, `fix/...`, `chore/...`, `docs/...`,
 Pull Request con merge commit (`--no-ff`, sin squash ni rebase), siempre con
 al menos un revisor asignado según la tabla de roles del roadmap.
 
-`[CAPTURA: lista de Pull Requests (gh pr list o la pestaña "Pull requests" en GitHub) mostrando rama origen, rama destino y revisor]`
+![Pull Requests del proyecto en GitHub](../imagenes/05-pull-requests.png)
 
 ## d) Pruebas unitarias
 
@@ -167,11 +195,26 @@ exigido: 9):
 ./devops.sh test
 # equivalente: pytest -v --cov=app --cov-report=term-missing
 
-15 passed in 1.16s
-TOTAL cobertura: 82%
+15 passed in 0.79s
+TOTAL cobertura: 79%
 ```
 
-`[CAPTURA: terminal con la salida completa de ./devops.sh test, o docs/evidencias/pytest.txt generado por ./devops.sh evidence]`
+![./devops.sh test: 15 pruebas en verde y reporte de cobertura](../imagenes/06-devops-test.png)
+
+La cobertura bajó de 82% a 79% al integrar `app/seed.py` (el comando
+`flask seed`), que no tiene prueba propia: es el siguiente candidato a
+cubrir. Las pruebas corren en menos de un segundo porque la lógica de negocio
+vive en funciones puras (`app/services/`) y la DB de prueba es SQLite en
+memoria: se pueden correr en cada guardado, no solo antes de un PR.
+
+**Las mismas reglas, probadas contra la app real.** Además de pytest,
+verificamos a mano con `curl` las reglas de inscripción sobre la app corriendo
+en Docker con Postgres: una batalla con cupo 2 acepta a Camila y a Yhoel
+(201), rechaza a Mateo porque ya no hay cupo (409) y rechaza que Camila se
+inscriba dos veces en la misma batalla (409). La búsqueda por radio de 2 km
+desde el Parque Kennedy devuelve solo las batallas de Miraflores:
+
+![Inscripciones por API: 201 con cupo, 409 por cupo lleno y 409 por duplicado](../imagenes/16-api-inscripcion.png)
 
 ## e) Automatización en scripts bash
 
@@ -184,13 +227,34 @@ Windows):
 - **Pruebas:** `./devops.sh test` crea el entorno virtual si falta y corre
   `pytest -v --cov=app --cov-report=term-missing`.
 - **Modo local:** `./devops.sh local` levanta la app sin Docker, con SQLite
-  en `instance/`, y arranca `flask --app app:create_app run --debug`.
+  en `instance/`, carga 3 batallas de ejemplo con `flask seed` y arranca
+  `flask --app app:create_app run --debug`.
 
 Además, `./devops.sh docker` (genera secretos y levanta Flask + Postgres),
 `./devops.sh down [-v]` (baja los servicios) y `./devops.sh evidence`
 (guarda las evidencias de este informe en `docs/evidencias/`).
 
-`[CAPTURA: terminal corriendo ./devops.sh clone, ./devops.sh test y ./devops.sh local, una tras otra]`
+La secuencia completa, tal como la haría un integrante nuevo desde cero
+(Ubuntu en WSL, sin nada instalado del proyecto):
+
+**1. Clonar** — clona el repo, crea el entorno virtual e instala dependencias:
+
+![./devops.sh clone](../imagenes/07-devops-clone.png)
+
+**2. Probar** — la misma salida de la sección d) (15 passed).
+
+**3. Correr en local** — sin Docker, con SQLite y datos de ejemplo:
+
+![./devops.sh local: seed y servidor de desarrollo en el puerto 5000](../imagenes/08-devops-local.png)
+
+Mientras corre, desde otra terminal la API ya responde con las 3 batallas
+sembradas (Miraflores, Cercado de Lima y Barranco):
+
+![Consultas a la app en modo local](../imagenes/08b-devops-local-curl.png)
+
+Con tres comandos alguien del equipo pasa de "no tengo nada" a "tengo la app
+corriendo con datos y las pruebas en verde", sin leer un README de dos
+páginas ni preguntar por WhatsApp qué versión de Python instalar.
 
 ## f) Dockerizar su aplicación
 
@@ -253,23 +317,55 @@ Postgres no publica puertos al host (solo es alcanzable desde la red
 secret (`secrets/pg_password.txt`, ignorado por git), nunca en texto plano en
 `compose.yaml`.
 
-**Evidencia de la aplicación corriendo en Docker:**
+**Evidencia de la aplicación corriendo en Docker.** Con un solo comando se
+generan los secretos, se construye la imagen, se crean las redes y el volumen,
+se espera a que Postgres esté *healthy*, se prueba `/health` y se cargan las
+batallas de ejemplo:
 
-```
-./devops.sh docker
-...
-Postgres healthy tras 1 intento(s)
-{"status":"ok","version":"0.1.0"}
+![./devops.sh docker: build, redes, volumen, healthcheck, /health y seed](../imagenes/09-devops-docker.png)
 
-NAME                  IMAGE             STATUS                   PORTS
-aura-map-flask-1      aura-map:latest   Up                       0.0.0.0:8080->5000/tcp
-aura-map-postgres-1   postgres:16.3     Up (healthy)              5432/tcp
-```
+El `curl: (56) Recv failure` que aparece una vez no es un error: es
+`devops.sh` reintentando `/health` mientras Gunicorn termina de arrancar
+(Postgres *healthy* no significa que Flask ya esté escuchando). Al segundo
+intento responde `{"status":"ok"}`.
 
-Postgres queda `Up (healthy)` sin puertos publicados al host, y `flask`
-responde en `http://localhost:8080/health`.
+**Verificación de aislamiento.** `./devops.sh evidence` confirma que la red
+`private` es `internal=true` y que Postgres no publica el puerto 5432 al host:
+la base de datos solo es alcanzable desde el contenedor de Flask.
 
-`[CAPTURA: terminal con la salida de ./devops.sh docker y docker compose ps, y el navegador en http://localhost:8080 mostrando el mapa]`
+![Red privada interna y Postgres sin puertos publicados](../imagenes/10-red-privada-y-puertos.png)
+
+**La app en el navegador** (`http://localhost:8080`). El mapa muestra las
+batallas de aura cercanas; al hacer clic en un marcador se ve la ficha con
+lugar, fecha, cupo, organizador y si tiene permiso municipal:
+
+![Mapa de AuraMap con las batallas de Lima](../imagenes/11-mapa-auramap.png)
+
+![Ficha de una batalla al hacer clic en el marcador](../imagenes/12-popup-batalla.png)
+
+Un organizador publica su batalla desde el formulario (validada en el backend:
+fecha futura, cupo 1–100, coordenadas válidas) y aparece al instante en el
+mapa, guardada en Postgres:
+
+![Formulario de publicación lleno](../imagenes/13-formulario-publicar.png)
+
+![Batalla publicada y visible en el mapa](../imagenes/14-batalla-publicada.png)
+
+Y quien solo quiere ir a ver busca por radio y distrito — aquí, batallas en
+Barranco a 5 km a la redonda:
+
+![Búsqueda por radio y distrito](../imagenes/15-busqueda-cercana.png)
+
+![/health en el navegador](../imagenes/17-health-navegador.png)
+
+**Un hallazgo que solo apareció al dockerizar.** En la primera corrida con
+Postgres, `/api/battles` respondía 500 (`relation "battle" does not exist`):
+las pruebas usan SQLite en memoria y crean las tablas en el fixture, así que
+nunca vieron el problema. Lo detectó C al reproducir el bug de `fix(db)` y se
+corrigió en `fix(db): crear tablas al arrancar y agregar comando flask seed`
+(PR #10): `create_app` crea las tablas que falten (tolerando que los 2
+workers de Gunicorn lo intenten a la vez) y `flask seed` carga los datos de
+ejemplo.
 
 ## g) Conclusiones preliminares
 
@@ -283,7 +379,7 @@ responde en `http://localhost:8080/health`.
 - **Pruebas unitarias:** correr las 15 pruebas en menos de 2 segundos, sin
   Docker ni Postgres, permitió refactorizar (`360634d`) con la garantía de
   que el comportamiento externo no cambiaba, y detectar en CI cualquier
-  regresión antes de mergear. La cobertura (82%) además señala qué ramas del
+  regresión antes de mergear. La cobertura (79%) además señala qué ramas del
   código (sobre todo manejo de errores en rutas) todavía no están probadas.
 - **Dockerizar la aplicación:** reproducir el entorno completo con un solo
   comando (`./devops.sh docker`) hizo posible reproducir de forma
@@ -292,8 +388,23 @@ responde en `http://localhost:8080/health`.
   `compose.yaml` obligan a modelar desde el inicio cómo se comunican los
   servicios en producción, no solo en la laptop de cada integrante.
 
+- **Probar en el entorno real, no solo en el de pruebas:** 15 pruebas en
+  verde no impidieron que la app fallara con una base de datos nueva en
+  Postgres. El entorno reproducible de Docker fue lo que hizo visible esa
+  diferencia entre SQLite en memoria y producción; la lección para el final
+  del curso es agregar una prueba de humo contra `docker compose` en el CI.
+- **El producto también importa:** elegir un tema que el equipo y sus
+  compañeros entienden al toque (el meme del aura) hizo que las reglas de
+  negocio salieran naturales —cupo, duplicados, permiso municipal— y que la
+  demo se explique sola: publicas tu batalla, la gente la encuentra en el mapa
+  y se inscribe antes de que se llene.
+
 ## Anexo: evidencias
 
-Las capturas y salidas de comandos referidas en este informe se guardan en
-[`docs/evidencias/`](evidencias/), generadas con `./devops.sh evidence` o
-adjuntas manualmente por cada integrante.
+- Capturas de pantalla: [`imagenes/`](../imagenes/) (numeradas en el orden
+  en que aparecen en este informe).
+- Salidas de comandos en texto: [`docs/evidencias/`](evidencias/), generadas
+  con `./devops.sh evidence` (`git-log.txt`, `pytest.txt`,
+  `compose-ps.txt`, `health.txt`, `red-privada.txt`, `postgres-puerto.txt`)
+  más el antes/después del bug de conexiones (`c10-antes.txt`,
+  `c10-despues.txt`).
