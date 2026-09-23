@@ -1,0 +1,21 @@
+DESPUES del fix (SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True} + wait_for_db
+con reintentos y backoff exponencial en app/db.py, invocado desde create_app):
+
+Se repitio el mismo experimento 3 veces: `docker compose restart postgres` seguido
+de 10 peticiones inmediatas a /api/battles.
+
+=== ciclo 1 ===
+intento 1: HTTP 200
+intento 2: HTTP 200
+... (10/10 en 200)
+=== ciclo 2 ===
+intento 1: HTTP 200
+... (10/10 en 200)
+=== ciclo 3 ===
+intento 1: HTTP 200
+... (10/10 en 200)
+
+Resultado: 30/30 peticiones en 200 tras 3 reinicios consecutivos de Postgres.
+pool_pre_ping hace un SELECT 1 antes de reutilizar una conexion del pool y la
+descarta/reconecta si Postgres ya la cerro, en vez de dejar que SQLAlchemy
+intente usarla y falle con OperationalError.

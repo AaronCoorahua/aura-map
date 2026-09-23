@@ -1,0 +1,22 @@
+ANTES del fix (sin pool_pre_ping ni reintentos):
+Se levantaron los servicios con docker compose, se confirmo /api/battles en 200,
+se ejecuto `docker compose restart postgres` y se pidio /api/battles 20 veces seguidas.
+
+Resultado: 2 de 20 peticiones devolvieron 500 justo tras el reinicio, luego el
+servicio se recupero solo (SQLAlchemy no volvia a intentar la conexion cerrada
+hasta que el pool expiraba organicamente).
+
+intento 1: HTTP 500
+intento 2: HTTP 200
+intento 3: HTTP 200
+intento 4: HTTP 500
+intento 5: HTTP 200
+...
+
+Log de gunicorn/flask en el intento fallido:
+sqlalchemy.exc.OperationalError: (psycopg.OperationalError) consuming input failed: terminating connection due to administrator command
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+[SQL: SELECT battle.id, battle.titulo, ... FROM battle ORDER BY battle.fecha ASC, battle.id ASC]
+172.19.0.1 - - [23/Sep/2026:16:56:18 +0000] "GET /api/battles HTTP/1.1" 500 265 "-" "curl/8.9.0"
