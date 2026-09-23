@@ -1,0 +1,45 @@
+*   3c41135 Merge pull request #10 from AaronCoorahua/fix/tablas-y-seed
+|\  
+| * cefd0c8 fix(db): crear tablas al arrancar y agregar comando flask seed
+* |   32af181 Merge pull request #9 from AaronCoorahua/docs/readme-informe
+|\ \  
+| |/  
+|/|   
+| * c32a0f3 docs: documentar prerrequisitos, uso de devops.sh y borrador del informe
+|/  
+*   e65086b Merge pull request #8 from AaronCoorahua/fix/conexion-db
+|\  
+| * 123289b fix(db): recuperar conexiones tras reinicio de Postgres
+|/  
+*   b413e63 Merge pull request #7 from AaronCoorahua/ci/pruebas-en-pr
+|\  
+| * 66809f5 ci: ejecutar pruebas y build de imagen en cada pull request
+* |   392c5a0 Merge pull request #6 from AaronCoorahua/feature/automatizacion
+|\ \  
+| |/  
+|/|   
+| * 1dcbb38 chore(scripts): automatizar clonación, pruebas y ejecución local
+* | d2fe592 Merge pull request #5 from AaronCoorahua/feature/dockerizar
+|\| 
+| * 4bc9f73 chore(compose): orquestar flask y postgres con redes, secretos, volumen y healthcheck
+| * 9dc6fdb chore(docker): Dockerfile multi-stage con Gunicorn y usuario no root
+|/  
+*   5545fa2 Merge pull request #4 from AaronCoorahua/feature/inscripcion
+|\  
+| * 066d2d4 feat(rsvp): inscripción a batallas con control de cupo
+|/  
+*   cb4fb5e Merge pull request #3 from AaronCoorahua/refactor/capa-datos
+|\  
+| * 360634d refactor(battles): separar consultas a la DB de la lógica de dominio
+|/  
+*   c15a579 Merge pull request #2 from AaronCoorahua/feature/busqueda-cercana
+|\  
+| * 5c1ed8d test(geo): pruebas de distancia y filtro por radio
+| * fd50fe8 feat(geo): buscar batallas cercanas por radio y mostrarlas en mapa
+|/  
+*   3189c99 Merge pull request #1 from AaronCoorahua/feature/publicar-batallas
+|\  
+| * ab71d8e test(battles): pruebas de validación y endpoints de batallas
+| * 35c1546 feat(battles): publicar y listar batallas de aura
+|/  
+* 7fadf53 chore: inicializar proyecto AuraMap con estructura base

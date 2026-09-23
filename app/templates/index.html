@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AuraMap — batallas de aura cerca de ti</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <h1>AuraMap</h1>
+    <p>Encuentra batallas de aura cerca de ti.</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Buscar cerca</h2>
+      <form id="form-busqueda">
+        <label>Latitud <input type="number" step="any" name="lat" value="-12.1210" required></label>
+        <label>Longitud <input type="number" step="any" name="lng" value="-77.0290" required></label>
+        <label>Radio (km) <input type="number" step="any" min="0.1" name="radius_km" value="10" required></label>
+        <label>Distrito <input type="text" name="district" placeholder="Todos"></label>
+        <button type="submit">Buscar</button>
+        <button type="button" id="btn-todas">Ver todas</button>
+      </form>
+      <p id="resultado" class="aviso"></p>
+
+      <h2>Publicar batalla</h2>
+      <form id="form-publicar">
+        <label>Título <input type="text" name="titulo" required></label>
+        <label>Descripción <input type="text" name="descripcion"></label>
+        <label>Distrito <input type="text" name="distrito" required></label>
+        <label>Dirección <input type="text" name="direccion" required></label>
+        <label>Latitud <input type="number" step="any" name="lat" value="-12.1210" required></label>
+        <label>Longitud <input type="number" step="any" name="lng" value="-77.0290" required></label>
+        <label>Fecha y hora <input type="datetime-local" name="fecha" required></label>
+        <label>Cupo <input type="number" name="cupo" min="1" max="100" value="20" required></label>
+        <label>Organizador <input type="text" name="organizador" required></label>
+        <label class="checkbox"><input type="checkbox" name="tiene_permiso"> Tiene permiso municipal</label>
+        <button type="submit">Publicar</button>
+      </form>
+      <p id="aviso-publicar" class="aviso"></p>
+    </section>
+
+    <div id="mapa"></div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
