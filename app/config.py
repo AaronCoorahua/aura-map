@@ -27,3 +27,5 @@ class Config:
     APP_VERSION = os.getenv("APP_VERSION", "0.1.0")
     SQLALCHEMY_DATABASE_URI = database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # pool_pre_ping evita usar conexiones que Postgres ya cerró (p. ej. tras un reinicio).
+    SQLALCHEMY_ENGINE_OPTIONS = {"pool_pre_ping": True}
