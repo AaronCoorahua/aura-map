@@ -278,7 +278,7 @@ flask:
   env_file:
     - .env.dev
   environment:
-    APP_VERSION: "0.1.0"
+    APP_VERSION: "1.1.0"
     DB_HOST: postgres
     DB_DATABASE: auradb
     DB_USER: aurauser
@@ -335,26 +335,43 @@ la base de datos solo es alcanzable desde el contenedor de Flask.
 
 ![Red privada interna y Postgres sin puertos publicados](../imagenes/10-red-privada-y-puertos.png)
 
-**La app en el navegador** (`http://localhost:8080`). El mapa muestra las
-batallas de aura cercanas; al hacer clic en un marcador se ve la ficha con
-lugar, fecha, cupo, organizador y si tiene permiso municipal:
+**La app en el navegador** (`http://localhost:8080`). Nadie busca un evento
+escribiendo latitud y longitud, así que la interfaz habla en el idioma de
+Lima: a la izquierda las batallas como tarjetas (fecha, lugar, organizador,
+permiso municipal y una barra con los cupos que quedan) y a la derecha el
+mapa. Al tocar una tarjeta el mapa vuela al pin y abre su ficha:
 
 ![Mapa de AuraMap con las batallas de Lima](../imagenes/11-mapa-auramap.png)
 
-![Ficha de una batalla al hacer clic en el marcador](../imagenes/12-popup-batalla.png)
+![Tarjeta seleccionada y ficha de la batalla en el mapa](../imagenes/12-popup-batalla.png)
 
-Un organizador publica su batalla desde el formulario (validada en el backend:
-fecha futura, cupo 1–100, coordenadas válidas) y aparece al instante en el
-mapa, guardada en Postgres:
+**Buscar como humano.** En "¿Dónde quieres buscar?" se elige un distrito de
+Lima o "Cerca de mí" (usa la ubicación del celular) y una distancia máxima
+en chips (2, 5, 10 o 20 km). El mapa dibuja el radio y cada tarjeta muestra a
+cuántos km queda. Aquí, batallas a menos de 2 km de Miraflores:
 
-![Formulario de publicación lleno](../imagenes/13-formulario-publicar.png)
+![Búsqueda por distrito y distancia](../imagenes/15-busqueda-cercana.png)
 
-![Batalla publicada y visible en el mapa](../imagenes/14-batalla-publicada.png)
+**Inscribirse en dos toques.** El botón "Inscribirme" pide solo un nombre; si
+la batalla se llenó o esa persona ya está inscrita, el mismo diálogo muestra
+el error de la API (409) en lenguaje humano:
 
-Y quien solo quiere ir a ver busca por radio y distrito — aquí, batallas en
-Barranco a 5 km a la redonda:
+![Diálogo de inscripción](../imagenes/15b-inscripcion-web.png)
 
-![Búsqueda por radio y distrito](../imagenes/15-busqueda-cercana.png)
+**Publicar sin coordenadas.** El organizador elige el distrito, el minimapa
+se centra ahí y basta con tocar o arrastrar el pin hasta el lugar exacto. Las
+reglas se validan en el navegador y otra vez en el backend (fecha futura,
+cupo 1–100, coordenadas válidas); al publicar, la batalla aparece al instante
+en el mapa, guardada en Postgres:
+
+![Formulario de publicación con pin en el mapa](../imagenes/13-formulario-publicar.png)
+
+![Batalla publicada y seleccionada en el mapa](../imagenes/14-batalla-publicada.png)
+
+**Pensada para celular**, que es donde se comparten estas batallas: el mapa
+pasa arriba y la lista abajo, sin scroll horizontal.
+
+![Versión móvil](../imagenes/15c-version-movil.png)
 
 ![/health en el navegador](../imagenes/17-health-navegador.png)
 
