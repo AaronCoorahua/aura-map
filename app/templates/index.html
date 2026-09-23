@@ -3,48 +3,179 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AuraMap — batallas de aura cerca de ti</title>
+  <title>AuraMap — batallas de aura en Lima</title>
+  <meta name="description" content="Encuentra batallas de aura cerca de ti en Lima, revisa cupos e inscríbete.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236a45ff'/%3E%3Cstop offset='1' stop-color='%23ff6fb1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='15' fill='url(%23g)'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-  <header>
-    <h1>AuraMap</h1>
-    <p>Encuentra batallas de aura cerca de ti.</p>
+  <header class="topbar">
+    <a class="marca" href="/" aria-label="AuraMap, inicio">
+      <span class="marca-logo" aria-hidden="true"></span>
+      <span class="marca-texto">AuraMap</span>
+      <span class="marca-ciudad">Lima</span>
+    </a>
+    <button type="button" class="btn btn-primario" id="btn-abrir-publicar">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>
+      Publicar batalla
+    </button>
   </header>
 
-  <main>
-    <section class="panel">
-      <h2>Buscar cerca</h2>
-      <form id="form-busqueda">
-        <label>Latitud <input type="number" step="any" name="lat" value="-12.1210" required></label>
-        <label>Longitud <input type="number" step="any" name="lng" value="-77.0290" required></label>
-        <label>Radio (km) <input type="number" step="any" min="0.1" name="radius_km" value="10" required></label>
-        <label>Distrito <input type="text" name="district" placeholder="Todos"></label>
-        <button type="submit">Buscar</button>
-        <button type="button" id="btn-todas">Ver todas</button>
-      </form>
-      <p id="resultado" class="aviso"></p>
+  <main class="layout">
+    <aside class="sidebar" aria-label="Buscar batallas">
+      <section class="buscador">
+        <p class="eyebrow">+1000 de aura te esperan</p>
+        <h1>Batallas de aura en Lima</h1>
+        <p class="bajada">Encuentra dónde se está farmeando aura esta semana, mira cuántos cupos quedan y asegura tu lugar.</p>
 
-      <h2>Publicar batalla</h2>
-      <form id="form-publicar">
-        <label>Título <input type="text" name="titulo" required></label>
-        <label>Descripción <input type="text" name="descripcion"></label>
-        <label>Distrito <input type="text" name="distrito" required></label>
-        <label>Dirección <input type="text" name="direccion" required></label>
-        <label>Latitud <input type="number" step="any" name="lat" value="-12.1210" required></label>
-        <label>Longitud <input type="number" step="any" name="lng" value="-77.0290" required></label>
-        <label>Fecha y hora <input type="datetime-local" name="fecha" required></label>
-        <label>Cupo <input type="number" name="cupo" min="1" max="100" value="20" required></label>
-        <label>Organizador <input type="text" name="organizador" required></label>
-        <label class="checkbox"><input type="checkbox" name="tiene_permiso"> Tiene permiso municipal</label>
-        <button type="submit">Publicar</button>
-      </form>
-      <p id="aviso-publicar" class="aviso"></p>
+        <label class="campo" for="zona">
+          <span class="campo-label">¿Dónde quieres buscar?</span>
+          <select id="zona" name="zona">
+            <option value="">Toda Lima</option>
+            <option value="__cerca">Cerca de mí (usar mi ubicación)</option>
+            <optgroup label="Distritos" id="zona-distritos"></optgroup>
+          </select>
+        </label>
+
+        <div class="radio-busqueda" id="radio-busqueda" hidden>
+          <span class="campo-label">Distancia máxima</span>
+          <div class="chips" role="radiogroup" aria-label="Distancia máxima">
+            <button type="button" class="chip" role="radio" data-radio="2">2 km</button>
+            <button type="button" class="chip activo" role="radio" data-radio="5" aria-checked="true">5 km</button>
+            <button type="button" class="chip" role="radio" data-radio="10">10 km</button>
+            <button type="button" class="chip" role="radio" data-radio="20">20 km</button>
+          </div>
+        </div>
+
+        <div class="filtros">
+          <label class="toggle">
+            <input type="checkbox" id="filtro-cupo">
+            <span class="toggle-pista" aria-hidden="true"></span>
+            Solo con cupos
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="filtro-permiso">
+            <span class="toggle-pista" aria-hidden="true"></span>
+            Con permiso municipal
+          </label>
+        </div>
+      </section>
+
+      <div class="resumen" id="resumen" aria-live="polite"></div>
+      <ul class="lista" id="lista"></ul>
+    </aside>
+
+    <section class="mapa-wrap" aria-label="Mapa de batallas">
+      <div id="mapa"></div>
     </section>
-
-    <div id="mapa"></div>
   </main>
+
+  <dialog class="dialogo dialogo-ancho" id="dlg-publicar" aria-labelledby="titulo-publicar">
+    <form id="form-publicar" novalidate>
+      <header class="dialogo-cabecera">
+        <div>
+          <h2 id="titulo-publicar">Publica tu batalla</h2>
+          <p>Cuéntale a Lima dónde y cuándo se mide el aura.</p>
+        </div>
+        <button type="button" class="btn-icono" data-cerrar aria-label="Cerrar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        </button>
+      </header>
+
+      <div class="dialogo-cuerpo publicar-grid">
+        <div class="publicar-datos">
+          <label class="campo">
+            <span class="campo-label">Nombre de la batalla</span>
+            <input name="titulo" maxlength="200" placeholder="Ej. Duelo de aura en el Parque Kennedy" required>
+          </label>
+          <label class="campo">
+            <span class="campo-label">Descripción <span class="opcional">opcional</span></span>
+            <textarea name="descripcion" rows="3" placeholder="Formato, reglas, qué traer..."></textarea>
+          </label>
+          <div class="fila-2">
+            <label class="campo">
+              <span class="campo-label">Fecha</span>
+              <input type="date" name="dia" required>
+            </label>
+            <label class="campo">
+              <span class="campo-label">Hora</span>
+              <input type="time" name="hora" value="18:00" required>
+            </label>
+          </div>
+          <div class="fila-2">
+            <label class="campo">
+              <span class="campo-label">Cupos</span>
+              <input type="number" name="cupo" min="1" max="100" value="20" required>
+            </label>
+            <label class="campo">
+              <span class="campo-label">Organiza</span>
+              <input name="organizador" maxlength="200" placeholder="Tu nombre o crew" required>
+            </label>
+          </div>
+          <label class="toggle toggle-bloque">
+            <input type="checkbox" name="tiene_permiso">
+            <span class="toggle-pista" aria-hidden="true"></span>
+            Tengo permiso municipal
+          </label>
+        </div>
+
+        <div class="publicar-lugar">
+          <label class="campo">
+            <span class="campo-label">Distrito</span>
+            <select name="distrito" id="publicar-distrito" required>
+              <option value="">Elige un distrito</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span class="campo-label">Dirección o referencia</span>
+            <input name="direccion" maxlength="250" placeholder="Ej. Parque Kennedy, frente a la iglesia" required>
+          </label>
+          <div class="campo">
+            <span class="campo-label">Ubicación exacta</span>
+            <div id="mapa-publicar" class="mapa-mini"></div>
+            <span class="ayuda" id="ayuda-pin">Elige un distrito y luego toca el mapa o arrastra el pin hasta el lugar exacto.</span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="dialogo-pie">
+        <p class="error-form" id="error-publicar" role="alert"></p>
+        <button type="button" class="btn btn-secundario" data-cerrar>Cancelar</button>
+        <button type="submit" class="btn btn-primario" id="btn-publicar">Publicar batalla</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog class="dialogo" id="dlg-inscripcion" aria-labelledby="titulo-inscripcion">
+    <form id="form-inscripcion" novalidate>
+      <header class="dialogo-cabecera">
+        <div>
+          <h2 id="titulo-inscripcion">Asegura tu lugar</h2>
+          <p id="inscripcion-batalla"></p>
+        </div>
+        <button type="button" class="btn-icono" data-cerrar aria-label="Cerrar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+        </button>
+      </header>
+      <div class="dialogo-cuerpo">
+        <label class="campo">
+          <span class="campo-label">¿Con qué nombre te inscribimos?</span>
+          <input name="nombre" maxlength="200" autocomplete="name" placeholder="Tu nombre o alias de batalla" required>
+        </label>
+      </div>
+      <footer class="dialogo-pie">
+        <p class="error-form" id="error-inscripcion" role="alert"></p>
+        <button type="button" class="btn btn-secundario" data-cerrar>Cancelar</button>
+        <button type="submit" class="btn btn-primario" id="btn-inscribir">Inscribirme</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="{{ url_for('static', filename='app.js') }}"></script>

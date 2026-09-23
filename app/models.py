@@ -31,6 +31,7 @@ class Battle(db.Model):
             "cupo": self.cupo,
             "organizador": self.organizador,
             "tiene_permiso": self.tiene_permiso,
+            "inscritos": len(self.inscripciones),
         }
 
 
