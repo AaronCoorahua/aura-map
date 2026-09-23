@@ -278,7 +278,7 @@ flask:
   env_file:
     - .env.dev
   environment:
-    APP_VERSION: "0.1.0"
+    APP_VERSION: "1.1.0"
     DB_HOST: postgres
     DB_DATABASE: auradb
     DB_USER: aurauser
