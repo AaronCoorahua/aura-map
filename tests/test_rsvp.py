@@ -24,6 +24,7 @@ def test_inscribe_cuando_hay_cupo(client):
 
     assert respuesta.status_code == 201
     assert respuesta.get_json()["nombre"] == "Ana"
+    assert client.get(f"/api/battles/{battle_id}").get_json()["inscritos"] == 1
 
 
 def test_rechaza_cuando_no_hay_cupo(client):
