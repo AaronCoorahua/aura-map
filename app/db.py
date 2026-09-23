@@ -2,7 +2,7 @@
 import time
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, ProgrammingError
 
 db = SQLAlchemy()
 
@@ -27,3 +27,13 @@ def wait_for_db(app, intentos: int = INTENTOS_CONEXION, espera_inicial: float = 
                 raise
             time.sleep(espera)
             espera *= 2
+
+
+def create_tables(app) -> None:
+    """Crea las tablas que falten. Es idempotente."""
+    with app.app_context():
+        try:
+            db.create_all()
+        except (IntegrityError, ProgrammingError):
+            # Los workers de Gunicorn arrancan a la vez: si otro ya creó las tablas, basta reintentar.
+            db.create_all()
