@@ -1,9 +1,10 @@
-"""Rutas de la API de batallas."""
-from flask import Blueprint, jsonify, request
+"""Rutas de la API de batallas y vista del mapa."""
+from flask import Blueprint, jsonify, render_template, request
 
 from app.db import db
 from app.models import Battle
 from app.services.battles import BattleValidationError, validate_battle_payload
+from app.services.geo import filter_within_radius
 
 
 battles_bp = Blueprint("battles", __name__)
@@ -24,7 +25,31 @@ def create_battle():
 
 @battles_bp.get("/api/battles")
 def list_battles():
-    batallas = Battle.query.order_by(Battle.fecha.asc(), Battle.id.asc()).all()
+    consulta = Battle.query
+
+    distrito = request.args.get("district", "").strip()
+    if distrito:
+        consulta = consulta.filter(db.func.lower(Battle.distrito) == distrito.lower())
+
+    batallas = consulta.order_by(Battle.fecha.asc(), Battle.id.asc()).all()
+
+    cerca = ("lat", "lng", "radius_km")
+    recibidos = [campo for campo in cerca if request.args.get(campo)]
+    if recibidos:
+        if len(recibidos) != len(cerca):
+            return jsonify(
+                {"error": "Para buscar cerca envía lat, lng y radius_km juntos."}
+            ), 400
+        try:
+            batallas = filter_within_radius(
+                batallas,
+                request.args.get("lat"),
+                request.args.get("lng"),
+                request.args.get("radius_km"),
+            )
+        except ValueError as exc:
+            return jsonify({"error": str(exc)}), 400
+
     return jsonify([batalla.to_dict() for batalla in batallas])
 
 
@@ -34,3 +59,8 @@ def get_battle(battle_id: int):
     if batalla is None:
         return jsonify({"error": "Batalla no encontrada."}), 404
     return jsonify(batalla.to_dict())
+
+
+@battles_bp.get("/")
+def mapa():
+    return render_template("index.html")
