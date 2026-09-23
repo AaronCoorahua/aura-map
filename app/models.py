@@ -32,3 +32,18 @@ class Battle(db.Model):
             "organizador": self.organizador,
             "tiene_permiso": self.tiene_permiso,
         }
+
+
+class Rsvp(db.Model):
+    """Inscripción de una persona a una batalla."""
+
+    __table_args__ = (db.UniqueConstraint("battle_id", "nombre"),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    battle_id = db.Column(db.Integer, db.ForeignKey("battle.id"), nullable=False)
+    nombre = db.Column(db.String(200), nullable=False)
+
+    battle = db.relationship("Battle", backref=db.backref("inscripciones", lazy=True))
+
+    def to_dict(self) -> dict:
+        return {"id": self.id, "battle_id": self.battle_id, "nombre": self.nombre}
