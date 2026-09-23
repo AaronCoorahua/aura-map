@@ -3,6 +3,7 @@ from flask import Flask
 
 from app.config import Config
 from app.db import db
+from app.routes import battles_bp
 
 
 def create_app(config_object: type = Config) -> Flask:
@@ -10,6 +11,7 @@ def create_app(config_object: type = Config) -> Flask:
     app.config.from_object(config_object)
 
     db.init_app(app)
+    app.register_blueprint(battles_bp)
 
     @app.get("/health")
     def health():
