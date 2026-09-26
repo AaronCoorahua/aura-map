@@ -84,11 +84,11 @@ Para bajar los servicios:
 
 ## Equipo y roles
 
-| Persona | Rol DevOps | Responsabilidad principal |
-|---|---|---|
-| A | Release Manager / Integración | GitFlow, protección de ramas, Conventional Commits, revisión de PRs, release y tag. |
-| B | QA & Test Automation | Estrategia de pruebas, pytest y cobertura, pipeline de CI. |
-| C | Platform / Container Engineer | Dockerfile, `compose.yaml` (redes, secretos, volumen, healthcheck) y `devops.sh`. |
+| Persona | Integrante (GitHub) | Rol DevOps | Responsabilidad principal |
+|---|---|---|---|
+| A | Rubén Coorahua (`@AaronCoorahua`) | Release Manager / Integración | GitFlow, protección de ramas, Conventional Commits, revisión de PRs, release y tag. |
+| B | Leonardo Candio (`@kndyy`) | QA & Test Automation | Estrategia de pruebas, pytest y cobertura, pipeline de CI. |
+| C | José Osnayo (`@jjosnayo2102`) | Platform / Container Engineer | Dockerfile, `compose.yaml` (redes, secretos, volumen, healthcheck) y `devops.sh`. |
 
 Los tres desarrollan features de producto; el rol define de qué responde cada
 uno y qué revisa con más rigor.
