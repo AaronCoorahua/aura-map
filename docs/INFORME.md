@@ -159,7 +159,7 @@ verifica la conexión antes de reutilizarla) y una espera con reintentos y
 backoff exponencial al arrancar la app (`app/db.py::wait_for_db`), porque
 `depends_on: condition: service_healthy` solo ordena el arranque de los
 contenedores y no protege si Postgres cae después. 5 archivos, incluyendo la
-evidencia de antes/después en `docs/evidencias/`. Ejemplo de un fix con
+evidencia de antes y después del arreglo. Ejemplo de un fix con
 reproducción documentada antes de escribir la corrección.
 
 ![git show --stat de los commits 1 a 3](../imagenes/03-commits-stat-1.png)
@@ -240,7 +240,7 @@ Windows):
 
 Además, `./devops.sh docker` (genera secretos y levanta Flask + Postgres),
 `./devops.sh down [-v]` (baja los servicios) y `./devops.sh evidence`
-(guarda las evidencias de este informe en `docs/evidencias/`).
+(guarda en archivos de texto las salidas que sirven de evidencia).
 
 La secuencia completa, tal como la haría un integrante nuevo desde cero
 (Ubuntu en WSL, sin nada instalado del proyecto):
@@ -424,12 +424,4 @@ ejemplo.
   demo se explique sola: publicas tu batalla, la gente la encuentra en el mapa
   y se inscribe antes de que se llene.
 
-## Anexo: evidencias
-
-- Capturas de pantalla: [`imagenes/`](../imagenes/) (numeradas en el orden
-  en que aparecen en este informe).
-- Salidas de comandos en texto: [`docs/evidencias/`](evidencias/), generadas
-  con `./devops.sh evidence` (`git-log.txt`, `pytest.txt`,
-  `compose-ps.txt`, `health.txt`, `red-privada.txt`, `postgres-puerto.txt`)
-  más el antes/después del bug de conexiones (`c10-antes.txt`,
-  `c10-despues.txt`).
+**Repositorio del proyecto:** <https://github.com/AaronCoorahua/aura-map>
