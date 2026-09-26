@@ -103,7 +103,11 @@ Regla del equipo (documentada en `CLAUDE.md`): un commit por ID del roadmap,
 mensaje exacto acordado de antemano, sin mezclar dos cambios en un commit ni
 partir uno en varios.
 
-![Historial con git log --oneline --graph: cada rama del roadmap entra a develop con merge commit](../imagenes/02-git-log-graph.png)
+**El historial en números:** 19 commits de trabajo (35 contando los merge
+commits), 16 Pull Requests mergeados y 2 releases etiquetados en `main`:
+`v1.0.0` (cierre del roadmap) y `v1.1.0` (interfaz rediseñada).
+
+![Historial con git log --oneline --graph: cada rama entra por merge commit y los releases llevan tag](../imagenes/02-git-log-graph.png)
 
 ### Análisis de 6 commits (de un historial con más de 9)
 
@@ -167,7 +171,11 @@ rama `develop` como integración, `main` como estable, y una rama por bloque
 del roadmap (`feature/...`, `fix/...`, `chore/...`, `docs/...`,
 `release/...`) que se integra a `develop` (o a `main` en el release) por
 Pull Request con merge commit (`--no-ff`, sin squash ni rebase), siempre con
-al menos un revisor asignado según la tabla de roles del roadmap.
+al menos un revisor asignado según la tabla de roles del roadmap. Cada
+release sigue el ciclo completo de GitFlow: rama `release/x.y.z` desde
+`develop` → PR a `main` → tag `vx.y.z` → PR de `main` de vuelta a `develop`.
+El CI (`.github/workflows/tests.yml`) corre las pruebas y construye la imagen
+Docker en cada PR, y ninguno se mergeó con el CI en rojo.
 
 ![Pull Requests del proyecto en GitHub](../imagenes/05-pull-requests.png)
 
