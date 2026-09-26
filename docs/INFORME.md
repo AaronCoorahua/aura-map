@@ -30,7 +30,7 @@ app web mínima (sin login, sin pagos) donde:
 |---|---|---|---|
 | A | Rubén Coorahua (`@AaronCoorahua`) | Release Manager / Integración | GitFlow, protección de ramas, Conventional Commits, revisión de PRs, release y tag. |
 | B | Leonardo Candio (`@kndyy`) | QA & Test Automation | Estrategia de pruebas, pytest y cobertura, pipeline de CI. |
-| C | J. Josnayo (`@jjosnayo2102`) | Platform / Container Engineer | Dockerfile, `compose.yaml` (redes, secretos, volumen, healthcheck) y `devops.sh`. |
+| C | José Osnayo (`@jjosnayo2102`) | Platform / Container Engineer | Dockerfile, `compose.yaml` (redes, secretos, volumen, healthcheck) y `devops.sh`. |
 
 Los tres desarrollan features de producto además de su rol; el rol define de
 qué responde cada uno y qué revisa con más rigor en los Pull Requests.
